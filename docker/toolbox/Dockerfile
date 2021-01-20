@@ -1,16 +1,5 @@
-FROM golang as builder
-
-RUN mkdir /app
-
-COPY . /app
-
-WORKDIR /app
-RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -o server .
-
-
-FROM scratch
-
-COPY --from=builder /app/server /
-
-EXPOSE 8080
-CMD ["/server"]
+FROM alpine
+RUN apk add --no-cache curl wget busybox-extras netcat-openbsd python py-pip bash && \
+    pip install awscli
+RUN apk --purge -v del py-pip
+CMD tail -f /dev/null
